@@ -58,7 +58,7 @@ const Product = mongoose.model("Product",{
         type:String,
         required:true,
     },
-    catagory:{
+    category:{
         type:String,
         required:true,
     },
@@ -96,7 +96,7 @@ app.post('/addproduct', async(req,res)=>{
         id:id,
         name:req.body.name,
         image:req.body.image,
-        catagory:req.body.catagory,
+        category:req.body.category,
         new_price:req.body.new_price,
         old_price:req.body.old_price,
     });
