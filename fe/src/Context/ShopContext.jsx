@@ -17,11 +17,46 @@ const ShopContextProvider = (props) => {
     const [all_product,setAll_Product] = useState([]); 
     const [cartItems, setCartItems] = useState(getDefaultCart());
 
-    useEffect(()=>{
-        fetch('http://localhost:4000/allproducts')
-        .then((response)=>response.json())
-        .then((data)=>setAll_Product(data))
-    },[])
+    // useEffect(()=>{
+    //     fetch('http://localhost:4000/allproducts')
+    //     .then((response)=>response.json())
+    //     .then((data)=>setAll_Product(data))
+    //     if(localStorage.getItem('auth-token')){
+    //         fetch('http://localhost:4000/getcart',{
+    //             method:'POST',
+    //             headers:{
+    //                 Accept:'application/form-data',
+    //                 'auth-token':`${localStorage.getItem('auth-token')}`,
+    //                 'Content-Type':'application/json'
+    //             },
+    //             body:"",
+            
+    //         }).then((response)=>response.json())
+    //         .then((data)=>(setCartItems(data)));
+
+    //     }
+    // },[])
+    useEffect(() => {
+    fetch('http://localhost:4000/allproducts')
+        .then((response) => response.json())
+        .then((data) => setAll_Product(data));
+
+    const authToken = localStorage.getItem('auth-token');
+    if (authToken) {
+        fetch('http://localhost:4000/getcart', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/form-data',
+                'auth-token': authToken,
+                'Content-Type': 'application/json',
+            },
+            body: '',
+        })
+        .then((response) => response.json())
+        .then((data) => setCartItems(data))
+        .catch((error) => console.error(error));
+    }
+}, []);
     
    const addToCart = (itemId) => {
     setCartItems((prev) => ({...prev, [itemId]: prev[itemId] + 1}));
@@ -59,6 +94,8 @@ const ShopContextProvider = (props) => {
             
         }
     } 
+    
+    
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
