@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 app.use(express.json());
 app.use(cors());
@@ -246,13 +247,63 @@ app.get('/popularinwomen', async (req,res)=>{
 
 
 // creating endpoint for adding products in cartdata
+app.use(bodyParser.json());
+// app.post('/addtocart',fetchUser, async (req,res)=>{
+//     let userData = await Users.findOne({_id:req.user.id});
+//     userData.cartData[req.body.itemId] +=1;
+//     await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+//     res.send("Added")
+app.post('/addtocart', fetchUser, async (req, res) => {
+    try {
+        let userData = await Users.findOne({ _id: req.user.id });
+        const itemId = req.body.itemId;
 
-app.post('/addtocart',fetchUser, async (req,res)=>{
-    let userData = await Users.findOne({_id:req.user.id});
-    userData.cartData[req.body.itemId] +=1;
-    await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
-    res.send("Added")
+        // Check if userData exists and has cartData
+        if (!userData.cartData) {
+            userData.cartData = {};
+        }
 
+        // Increment item count in cartData or set to 1 if it doesn't exist
+        userData.cartData[itemId] = (userData.cartData[itemId] || 0) + 1;
+
+        await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
+        res.send("Added");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+// creating endpoint to remove product from cartdata
+app.post('/removefromcart',fetchUser, async (req,res) => {
+    // console.log("removed",req.body.itemId)
+    // let userData = await Users.findOne({_id:req.user.id});
+    // if(userData.cartData[req.body.itemId]>0)
+    // userData.cartData[req.body.itemId] -=1;
+    // await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+    // res.send("Removed")
+    try {
+        let userData = await Users.findOne({ _id: req.user.id });
+        const itemId = req.body.itemId;
+
+        // Check if userData exists and has cartData
+        if (!userData.cartData) {
+            userData.cartData = {};
+        }
+
+        // Decrement item count in cartData or remove the item if count reaches 0
+        if (userData.cartData[itemId] && userData.cartData[itemId] > 0) {
+            userData.cartData[itemId] -= 1;
+        } else {
+            delete userData.cartData[itemId];
+        }
+
+        await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
+        res.json({ success: true, message: 'Item removed from cart' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
 })
 
 
