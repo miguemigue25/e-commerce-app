@@ -1,9 +1,9 @@
 import React from 'react'
 import "./Admin.css"
-import Sidebar from '../../components/Sidebar/Sidebar'
+import Sidebar from '../../Components/Sidebar/Sidebar'
 import {Routes,Route} from 'react-router-dom'
-import AddProduct from '../../components/AddProduct/AddProduct'
-import ListProduct from '../../components/ListProduct/ListProduct'
+import AddProduct from '../../Components/AddProduct/AddProduct'
+import ListProduct from '../../Components/ListProduct/ListProduct'
 
 const Admin = () => {
   return (
