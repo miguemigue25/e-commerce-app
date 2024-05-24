@@ -1,6 +1,6 @@
 import React from 'react'
 import Admin from './Pages/Admin/Admin'
-import Navbar from 'admin/src/Components/Navbar/Navbar'
+import Navbar from 'admin/src/Components/Navbar/Navbar.jsx'
 // import Navbar from './Components/Navbar/Navbar'
 
 
